@@ -9,7 +9,7 @@ Bootstrap(app)
 
 @app.route('/')
 def home():
-    return "<h1>030</h1>"
+    return render_template("index.html")
 
 
 if __name__ == "__main__":
