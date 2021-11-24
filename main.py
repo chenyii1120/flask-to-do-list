@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
 class Mission(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     content = db.Column(db.String(250), nullable=False)
-    creat_date = db.Column(db.DateTime, nullable=False)
+    create_date = db.Column(db.DateTime, nullable=False)
     done = db.Column(db.Boolean, nullable=False)
     done_date = db.Column(db.DateTime)
 
@@ -34,13 +34,41 @@ def home():
         now = datetime.datetime.now()
         new = Mission(
             content=form.content.data,
-            creat_date=now,
+            create_date=now,
             done=False
         )
         db.session.add(new)
         db.session.commit()
         return redirect("/")
     return render_template("index.html", form=form, undone=undone_list, done=done_list)
+
+
+@app.route("/check/<int:mission_id>")
+def check(mission_id):
+    target = Mission.query.get(mission_id)
+    target.done = True
+    target.done_date = datetime.datetime.now()
+    db.session.commit()
+    return redirect("/")
+
+
+@app.route("/uncheck/<int:mission_id>")
+def uncheck(mission_id):
+    target = Mission.query.get(mission_id)
+    target.done = False
+    target.done_date = datetime.datetime.now()
+    db.session.commit()
+    return redirect("/")
+
+
+# todo
+def edit(id):
+    pass
+
+
+# todo
+def delete():
+    pass
 
 
 if __name__ == "__main__":
