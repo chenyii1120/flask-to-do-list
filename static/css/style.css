@@ -43,3 +43,13 @@ body {
     color: gray!important;
     text-decoration: line-through;
 }
+
+.d-hide {
+    visibility: hidden;
+}
+
+.clear-btn {
+    border: none;
+    outline: none;
+    background: none;
+}

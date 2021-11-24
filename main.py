@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap
 # from flask_wtf import FlaskForm
 from form import CreateMission
@@ -30,7 +30,8 @@ def home():
     form = CreateMission()
     undone_list = Mission.query.filter_by(done=False).all()
     done_list = Mission.query.filter_by(done=True).all()
-    if form.validate_on_submit():
+
+    if form.validate_on_submit() and form.content.data != "":
         now = datetime.datetime.now()
         new = Mission(
             content=form.content.data,
@@ -61,14 +62,20 @@ def uncheck(mission_id):
     return redirect("/")
 
 
-# todo
-def edit(id):
-    pass
+@app.route("/edit/<int:mission_id>", methods=["POST"])
+def edit(mission_id):
+    target = Mission.query.get(mission_id)
+    target.content = request.values[f'mission-{mission_id}']
+    db.session.commit()
+    return redirect("/")
 
 
-# todo
-def delete():
-    pass
+@app.route("/delete/<int:mission_id>")
+def delete(mission_id):
+    target = Mission.query.get(mission_id)
+    db.session.delete(target)
+    db.session.commit()
+    return redirect("/")
 
 
 if __name__ == "__main__":
