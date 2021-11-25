@@ -1,6 +1,5 @@
 from flask import Flask, render_template, redirect, url_for, request
 from flask_bootstrap import Bootstrap
-# from flask_wtf import FlaskForm
 from form import CreateMission
 from flask_sqlalchemy import SQLAlchemy
 import datetime
