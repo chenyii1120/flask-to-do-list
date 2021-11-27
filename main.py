@@ -3,7 +3,7 @@ from flask_bootstrap import Bootstrap
 from form import CreateMission
 from flask_sqlalchemy import SQLAlchemy
 import datetime
-import pytz
+# import pytz
 import os
 
 app = Flask(__name__)
@@ -28,9 +28,7 @@ db.create_all()
 # localize the time
 def get_time():
     now = datetime.datetime.now()
-    tw = pytz.timezone("Asia/Taipei")
-    tw_now = tw.localize(now)
-    return tw_now
+    return now
 
 
 @app.route('/', methods=["GET", "POST"])
@@ -86,4 +84,4 @@ def delete(mission_id):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
