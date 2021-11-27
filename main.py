@@ -3,14 +3,16 @@ from flask_bootstrap import Bootstrap
 from form import CreateMission
 from flask_sqlalchemy import SQLAlchemy
 import datetime
+import pytz
+import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'd04daf94f0fc0f6cbe6095797c18dc2c03d089fa'
+app.config['SECRET_KEY'] = os.environ.get("SECRET_KEY")
 Bootstrap(app)
 
 # CONNECT TO DB
 db = SQLAlchemy(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///todo.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
 
 
 class Mission(db.Model):
@@ -23,6 +25,13 @@ class Mission(db.Model):
 
 db.create_all()
 
+# localize the time
+def get_time():
+    now = datetime.datetime.now()
+    tw = pytz.timezone("Asia/Taipei")
+    tw_now = tw.localize(now)
+    return tw_now
+
 
 @app.route('/', methods=["GET", "POST"])
 def home():
@@ -31,10 +40,9 @@ def home():
     done_list = Mission.query.filter_by(done=True).all()
 
     if form.validate_on_submit() and form.content.data != "":
-        now = datetime.datetime.now()
         new = Mission(
             content=form.content.data,
-            create_date=now,
+            create_date=get_time(),
             done=False
         )
         db.session.add(new)
@@ -47,7 +55,7 @@ def home():
 def check(mission_id):
     target = Mission.query.get(mission_id)
     target.done = True
-    target.done_date = datetime.datetime.now()
+    target.done_date = get_time()
     db.session.commit()
     return redirect("/")
 
@@ -56,7 +64,7 @@ def check(mission_id):
 def uncheck(mission_id):
     target = Mission.query.get(mission_id)
     target.done = False
-    target.done_date = datetime.datetime.now()
+    target.done_date = get_time()
     db.session.commit()
     return redirect("/")
 
