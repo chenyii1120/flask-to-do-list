@@ -12,7 +12,7 @@ Bootstrap(app)
 
 # CONNECT TO DB
 db = SQLAlchemy(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL_1")
 
 
 class Mission(db.Model):
